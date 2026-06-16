@@ -1,0 +1,2343 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#2F5233">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="محاسبة">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%232F5233' rx='20'/><text x='50' y='65' font-size='50' text-anchor='middle' fill='white'>📿</text></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%232F5233'/><text x='50' y='65' font-size='50' text-anchor='middle' fill='white'>📿</text></svg>">
+<title>محاسبة النفس</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'Traditional Arabic', 'Amiri', 'Times New Roman', serif;
+    direction: rtl;
+    background: #FAF6EE;
+    color: #2C2416;
+    min-height: 100vh;
+    padding: 14px;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, #2F5233 0%, #4A7C50 100%);
+    color: white;
+    padding: 16px;
+    border-radius: 14px;
+    margin-bottom: 12px;
+  }
+  .header-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .title { font-size: 24px; font-weight: bold; }
+  .subtitle { font-size: 13px; opacity: 0.85; margin-top: 3px; }
+  .save-status { margin-top: 6px; font-size: 12px; opacity: 0.85; text-align: center; height: 16px; }
+
+  /* DATE BAR */
+  .date-bar {
+    display: flex; gap: 6px; margin-top: 10px;
+    flex-wrap: wrap;
+  }
+  .date-btn {
+    flex: 1; min-width: 0;
+    padding: 8px 6px;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 8px;
+    color: white;
+    font-family: inherit;
+    font-size: 12px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  .date-btn.active {
+    background: white;
+    color: #2F5233;
+    border-color: white;
+  }
+
+  /* RETROACTIVE BANNER */
+  .retro-banner {
+    background: #FFE082;
+    border: 2px solid #B8860B;
+    color: #5C4A2A;
+    padding: 10px 14px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    font-size: 13px;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex; gap: 4px; margin-bottom: 12px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+  }
+  .tab {
+    flex: 1; min-width: 70px;
+    padding: 9px 4px;
+    background: white;
+    border: 1.5px solid #C9B68B;
+    border-radius: 10px;
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+    color: #5C4A2A;
+    font-weight: bold;
+    white-space: nowrap;
+  }
+  .tab.active { background: #2F5233; color: white; border-color: #2F5233; }
+
+  /* ============ HEART PAGE ============ */
+  .heart-page { text-align: center; padding: 10px 0 20px; }
+  .heart-intro {
+    color: #5C4A2A;
+    font-size: 14px;
+    margin-bottom: 16px;
+    line-height: 1.8;
+    background: #FFF8E7;
+    border: 1.5px solid #D4A574;
+    padding: 12px;
+    border-radius: 10px;
+  }
+  .heart-container {
+    position: relative;
+    margin: 10px auto;
+    width: 100%;
+    max-width: 440px;
+    aspect-ratio: 1 / 1;
+  }
+  .heart-svg {
+    width: 100%; height: 100%;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.1));
+  }
+  .heart-stats {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .heart-stat {
+    background: white;
+    padding: 14px;
+    border-radius: 10px;
+    border-top: 3px solid;
+  }
+  .heart-stat-val {
+    font-size: 26px;
+    font-weight: bold;
+  }
+  .heart-stat-lbl {
+    font-size: 12px;
+    color: #5C4A2A;
+    margin-top: 4px;
+  }
+  .heart-action {
+    margin-top: 16px;
+    background: #2F5233;
+    color: white;
+    padding: 14px;
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer;
+    border: none;
+    width: 100%;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: bold;
+  }
+  .heart-quote {
+    margin-top: 16px;
+    padding: 14px;
+    background: #FFF8E7;
+    border-right: 4px solid #B8860B;
+    border-radius: 8px;
+    font-size: 13px;
+    line-height: 1.9;
+    color: #5C4A2A;
+    text-align: right;
+  }
+  .heart-empty {
+    margin-top: 20px;
+    padding: 16px;
+    background: #E8F5E9;
+    border: 1.5px solid #4A7C50;
+    border-radius: 10px;
+    color: #2F5233;
+    font-weight: bold;
+  }
+
+  /* ============ GARDEN PAGE - NATURAL LANDSCAPE ============ */
+  .garden-page { padding: 4px 0 20px; }
+  .garden-intro {
+    background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+    border: 1.5px solid #4A7C50;
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 14px;
+    color: #2F5233;
+    font-size: 13px;
+    line-height: 1.8;
+    text-align: center;
+  }
+  .garden-stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .garden-stat {
+    background: white;
+    padding: 12px 6px;
+    border-radius: 10px;
+    text-align: center;
+    border-top: 3px solid;
+  }
+  .garden-stat-val {
+    font-size: 22px;
+    font-weight: bold;
+  }
+  .garden-stat-lbl {
+    font-size: 11px;
+    color: #5C4A2A;
+    margin-top: 2px;
+  }
+
+  /* The landscape - full width hero */
+  .landscape-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+    margin-bottom: 14px;
+    background: linear-gradient(180deg, #87CEEB 0%, #B0E0E6 50%, #98D984 70%, #6FBA50 100%);
+  }
+  .landscape-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  /* Plant tooltip on hover/tap */
+  .plant-tooltip {
+    position: absolute;
+    background: rgba(0,0,0,0.85);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    pointer-events: none;
+    z-index: 10;
+    white-space: nowrap;
+    transform: translate(-50%, -120%);
+    display: none;
+  }
+  .plant-tooltip.visible { display: block; }
+  .plant-tooltip::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: rgba(0,0,0,0.85);
+  }
+
+  /* Badges section */
+  .badges-section {
+    background: white;
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 14px;
+  }
+  .badges-title {
+    font-size: 15px;
+    font-weight: bold;
+    color: #B8860B;
+    margin-bottom: 12px;
+    text-align: center;
+    padding-bottom: 8px;
+    border-bottom: 2px double #B8860B;
+  }
+  .badges-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
+    gap: 10px;
+  }
+  .earned-badge {
+    text-align: center;
+    padding: 10px 6px;
+    background: #FFF8E7;
+    border-radius: 10px;
+    border: 1.5px solid #D4A574;
+  }
+  .earned-badge-icon {
+    font-size: 28px;
+    margin-bottom: 4px;
+  }
+  .earned-badge-name {
+    font-size: 10px;
+    color: #5C4A2A;
+    line-height: 1.3;
+    font-weight: bold;
+    margin-bottom: 3px;
+  }
+  .earned-badge-tier {
+    font-size: 9px;
+    padding: 1px 5px;
+    border-radius: 6px;
+    display: inline-block;
+    color: white;
+    font-weight: bold;
+  }
+  .badge-bronze { background: linear-gradient(135deg, #CD7F32 0%, #A0522D 100%) !important; }
+  .badge-silver { background: linear-gradient(135deg, #E8E8E8 0%, #A8A8A8 100%) !important; color: #4A4A4A !important; }
+  .badge-gold { background: linear-gradient(135deg, #FFD700 0%, #DAA520 100%) !important; color: #5C4A2A !important; }
+  .badge-diamond { background: linear-gradient(135deg, #B9F2FF 0%, #4FC3F7 100%) !important; color: #1565C0 !important; }
+
+  /* Plant list (text below landscape) */
+  .plants-list {
+    background: white;
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 14px;
+  }
+  .plants-list-title {
+    font-size: 15px;
+    font-weight: bold;
+    color: #2F5233;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #C8E6C9;
+    text-align: center;
+  }
+  .plants-list-section {
+    margin-bottom: 14px;
+  }
+  .plants-list-section-title {
+    font-size: 13px;
+    font-weight: bold;
+    color: #5C4A2A;
+    margin-bottom: 6px;
+  }
+  .plant-row {
+    display: flex;
+    align-items: center;
+    padding: 8px 10px;
+    background: #F9F5EC;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    gap: 10px;
+  }
+  .plant-row-mini {
+    width: 32px; height: 32px;
+    flex-shrink: 0;
+  }
+  .plant-row-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .plant-row-name {
+    font-size: 13px;
+    color: #2C2416;
+    font-weight: bold;
+  }
+  .plant-row-detail {
+    font-size: 11px;
+    color: #8B7355;
+    margin-top: 2px;
+  }
+  .plant-row-streak {
+    font-size: 11px;
+    background: #E8F5E9;
+    color: #2F5233;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: bold;
+    white-space: nowrap;
+  }
+  .plant-row-streak.wilting {
+    background: #FFE0B2;
+    color: #BF360C;
+  }
+  .plant-row-streak.dead {
+    background: #ECEFF1;
+    color: #607D8B;
+  }
+  .garden-empty {
+    text-align: center;
+    color: #5C4A2A;
+    padding: 30px 20px;
+    font-size: 14px;
+    line-height: 1.8;
+  }
+
+  /* BANNER */
+  .banner {
+    background: #FFF8E7;
+    border: 1.5px solid #D4A574;
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 12px;
+    display: flex; gap: 10px; align-items: center;
+  }
+  .banner-icon { font-size: 26px; }
+  .banner-text { font-size: 13px; color: #5C4A2A; line-height: 1.7; flex: 1; }
+
+  /* CATEGORY */
+  .category {
+    background: white;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .cat-header {
+    padding: 13px 16px;
+    color: white;
+    cursor: pointer;
+    display: flex; justify-content: space-between; align-items: center;
+    user-select: none;
+  }
+  .cat-header-left { display: flex; align-items: center; gap: 10px; }
+  .cat-header-right { display: flex; align-items: center; gap: 10px; }
+  .cat-icon { font-size: 22px; }
+  .cat-title { font-size: 16px; font-weight: bold; }
+  .cat-score {
+    font-size: 13px;
+    background: rgba(255,255,255,0.22);
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-weight: bold;
+  }
+  .cat-arrow {
+    font-size: 11px;
+    transition: transform 0.2s;
+  }
+  .cat-arrow.collapsed { transform: rotate(180deg); }
+  .cat-body {
+    padding: 6px 0;
+    display: none;
+  }
+  .cat-body.expanded { display: block; }
+
+  /* SUB-HEADER (for prayers grouping) */
+  .sub-header {
+    padding: 10px 16px 4px 16px;
+    color: #2F5233;
+    font-weight: bold;
+    font-size: 14px;
+    background: #F5EFE6;
+    border-top: 1px solid #E8DCC4;
+  }
+  .sub-header:first-child { border-top: none; }
+
+  /* CHECK ITEM (for virtues) */
+  .check-item {
+    display: flex; align-items: center;
+    padding: 11px 16px; gap: 12px;
+    cursor: pointer;
+    border-bottom: 1px solid #F5EFE6;
+    transition: background 0.15s;
+  }
+  .check-item.checked { background: #FAFAF5; }
+  .checkbox {
+    width: 24px; height: 24px;
+    border-radius: 6px;
+    border: 2px solid #C9B68B;
+    background: white;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .checkbox.checked { border-width: 2px; }
+  .checkbox .checkmark { color: white; font-size: 16px; font-weight: bold; display: none; }
+  .checkbox.checked .checkmark { display: block; }
+  .item-label { font-size: 14.5px; color: #2C2416; flex: 1; line-height: 1.5; }
+  .item-label.dim { color: #6B6055; }
+
+  /* SIN ITEM (yes/no for haram) */
+  .sin-item {
+    padding: 11px 16px;
+    border-bottom: 1px solid #F5EFE6;
+  }
+  .sin-label {
+    font-size: 14.5px;
+    color: #2C2416;
+    margin-bottom: 8px;
+    font-weight: bold;
+  }
+  .sin-buttons {
+    display: flex; gap: 8px;
+  }
+  .sin-btn {
+    flex: 1;
+    padding: 9px 12px;
+    border-radius: 8px;
+    border: 1.5px solid #C9B68B;
+    background: white;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: bold;
+    color: #8B7355;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .sin-btn.selected-no {
+    background: #2F5233;
+    border-color: #2F5233;
+    color: white;
+  }
+  .sin-btn.selected-yes {
+    background: #8B0000;
+    border-color: #8B0000;
+    color: white;
+  }
+  .sin-help {
+    font-size: 11px;
+    color: #8B7355;
+    margin-top: 6px;
+    font-style: italic;
+  }
+
+  /* COUNT ITEM */
+  .count-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 11px 16px; gap: 12px;
+    border-bottom: 1px solid #F5EFE6;
+  }
+  .counter { display: flex; align-items: center; gap: 10px; }
+  .counter-btn {
+    width: 30px; height: 30px;
+    border-radius: 6px; border: none;
+    color: white; font-size: 18px; font-weight: bold;
+    cursor: pointer; font-family: inherit;
+  }
+  .counter-value {
+    font-size: 17px; font-weight: bold;
+    min-width: 28px; text-align: center;
+    color: #2F5233;
+  }
+
+  /* REFLECTION */
+  .reflection {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    margin-top: 14px;
+  }
+  .reflection-title {
+    font-size: 18px; font-weight: bold;
+    color: #2F5233;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 2px double #B8860B;
+    text-align: center;
+  }
+  .notes-group { margin-bottom: 14px; }
+  .notes-label {
+    display: block; font-size: 13px;
+    color: #5C4A2A; margin-bottom: 6px; font-weight: bold;
+  }
+  textarea {
+    width: 100%; padding: 10px;
+    border: 1.5px solid #C9B68B;
+    border-radius: 8px;
+    font-family: inherit; font-size: 14px;
+    direction: rtl; text-align: right;
+    resize: vertical;
+    background: #FAFAF5;
+    color: #2C2416;
+    line-height: 1.7;
+  }
+
+  /* DUA CARD */
+  .dua-card {
+    background: #FFF8E7;
+    border: 2px solid #D4A574;
+    border-radius: 12px;
+    padding: 16px;
+    margin-top: 14px;
+  }
+  .dua-title {
+    font-size: 16px; font-weight: bold;
+    color: #8B4513;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+  .dua-text {
+    font-size: 14px;
+    color: #2C2416;
+    line-height: 1.95;
+    text-align: justify;
+  }
+
+  /* ============ TAWBA TAB ============ */
+  .tawba-empty {
+    text-align: center;
+    padding: 40px 20px;
+    background: white;
+    border-radius: 12px;
+  }
+  .tawba-empty-icon { font-size: 60px; margin-bottom: 14px; }
+  .tawba-empty-text {
+    font-size: 17px;
+    color: #2F5233;
+    font-weight: bold;
+    margin-bottom: 6px;
+  }
+  .tawba-empty-sub {
+    font-size: 14px;
+    color: #5C4A2A;
+    line-height: 1.8;
+  }
+  .tawba-card {
+    background: white;
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 12px;
+    border-right: 4px solid #8B0000;
+  }
+  .tawba-card-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 8px;
+  }
+  .tawba-card-title {
+    font-size: 15px;
+    font-weight: bold;
+    color: #2C2416;
+  }
+  .tawba-card-count {
+    background: #8B0000;
+    color: white;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  .tawba-progress {
+    height: 6px;
+    background: #F0E6D2;
+    border-radius: 3px;
+    overflow: hidden;
+    margin: 10px 0;
+  }
+  .tawba-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #2F5233 0%, #4A7C50 100%);
+    transition: width 0.4s;
+  }
+  .tawba-progress-label {
+    font-size: 11px;
+    color: #5C4A2A;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+  .tawba-btn {
+    background: #2F5233;
+    color: white;
+    padding: 12px;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    border: none;
+    width: 100%;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 8px;
+  }
+  .tawba-btn.disabled {
+    background: #6B6055;
+    cursor: not-allowed;
+  }
+  .tawba-placeholder {
+    background: #FFF8E7;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #5C4A2A;
+    line-height: 1.8;
+    font-style: italic;
+    margin-top: 8px;
+  }
+
+  /* ============ HISTORY ============ */
+  .hist-title {
+    font-size: 18px; font-weight: bold;
+    color: #2F5233; margin-bottom: 12px;
+  }
+  .hist-row {
+    background: white;
+    padding: 14px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    display: flex; justify-content: space-between; align-items: center;
+    border-right: 4px solid #2F5233;
+  }
+  .hist-row-arrow { color: #8B6914; font-size: 18px; }
+  .back-btn {
+    background: transparent; border: none;
+    color: #8B6914; font-size: 15px;
+    cursor: pointer; font-family: inherit;
+    font-weight: bold; margin-bottom: 10px; padding: 6px;
+  }
+
+  /* EMPTY */
+  .empty-state {
+    text-align: center; padding: 40px 20px;
+    background: white; border-radius: 12px;
+  }
+  .empty-icon { font-size: 50px; margin-bottom: 12px; }
+  .empty-text {
+    font-size: 16px; color: #5C4A2A;
+    font-weight: bold; margin-bottom: 6px;
+  }
+  .empty-hint { font-size: 13px; color: #8B7355; }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    margin-top: 24px;
+    padding: 12px;
+    color: #8B7355;
+    font-size: 11px;
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-top">
+    <div style="flex:1; min-width:0">
+      <div class="title">محاسبة النفس</div>
+      <div class="subtitle" id="todayDate"></div>
+    </div>
+  </div>
+  <div class="date-bar">
+    <button class="date-btn" data-offset="2" onclick="setDateOffset(2)">قبل يومين</button>
+    <button class="date-btn" data-offset="1" onclick="setDateOffset(1)">أمس</button>
+    <button class="date-btn active" data-offset="0" onclick="setDateOffset(0)">اليوم</button>
+    <button class="date-btn" onclick="openDatePicker()">📅 اختر</button>
+  </div>
+  <div class="save-status" id="saveStatus"></div>
+</div>
+
+<!-- HIDDEN DATE INPUT FOR PICKER -->
+<input type="date" id="datePicker" style="position:absolute;opacity:0;pointer-events:none" onchange="onDatePicked(this.value)">
+
+<!-- RETROACTIVE BANNER -->
+<div id="retroBanner" class="retro-banner" style="display:none">
+  ⏰ تعبئة يوم سابق: <span id="retroDate"></span>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab active" data-view="heart" onclick="switchView('heart')">القلب 🤍</button>
+  <button class="tab" data-view="garden" onclick="switchView('garden')">الحديقة 🌸</button>
+  <button class="tab" data-view="muhasaba" onclick="switchView('muhasaba')">المحاسبة</button>
+  <button class="tab" data-view="tawba" onclick="switchView('tawba')">التوبة</button>
+  <button class="tab" data-view="history" onclick="switchView('history')">السجل</button>
+  <button class="tab" data-view="stats" onclick="switchView('stats')">الإحصائيات</button>
+</div>
+
+<div id="mainContent"></div>
+
+<div class="footer">
+  محاسبة النفس · بياناتك تُحفظ على جوالك<br>
+  <span style="opacity:0.7">قال عمر: حاسِبوا أنفسَكم قبل أن تُحاسَبوا</span>
+</div>
+
+<script>
+// =================== DATA STRUCTURE ===================
+
+// Prayers - each prayer has multiple aspects
+const PRAYERS = [
+  { id: 'fajr', name: 'الفجر', hasSunnah: true },
+  { id: 'dhuhr', name: 'الظهر', hasSunnah: true },
+  { id: 'asr', name: 'العصر', hasSunnah: false }, // no raatibah
+  { id: 'maghrib', name: 'المغرب', hasSunnah: true },
+  { id: 'isha', name: 'العشاء', hasSunnah: true },
+];
+
+// Virtues (encouraged - ✓ system, no sins generated)
+const VIRTUES = [
+  {
+    id: 'salawat',
+    title: 'الصلوات',
+    icon: '🕌',
+    color: '#2F5233',
+    isPrayers: true, // special rendering
+  },
+  {
+    id: 'quran',
+    title: 'القرآن والأذكار',
+    icon: '📖',
+    color: '#4A7C50',
+    items: [
+      { id: 'wird', label: 'الورد اليومي من القرآن' },
+      { id: 'adh_wake', label: 'أذكار الاستيقاظ' },
+      { id: 'adh_morn', label: 'أذكار الصباح' },
+      { id: 'adh_eve', label: 'أذكار المساء' },
+      { id: 'adh_sleep', label: 'أذكار النوم' },
+    ],
+  },
+  {
+    id: 'qiyam',
+    title: 'قيام الليل والنوافل',
+    icon: '🌙',
+    color: '#6B7355',
+    items: [
+      { id: 'qiyam', label: 'قيام الليل (ولو ركعتين)' },
+      { id: 'witr', label: 'الوتر' },
+      { id: 'duha', label: 'صلاة الضحى' },
+      { id: 'saum_nafl', label: 'صيام نافلة' },
+    ],
+  },
+  {
+    id: 'akhlaq',
+    title: 'الأخلاق والمعاملات',
+    icon: '🤝',
+    color: '#8B6914',
+    items: [
+      { id: 'birr', label: 'بَرَرتُ والديّ اليوم' },
+      { id: 'family', label: 'أحسنتُ مع الزوجة والأبناء' },
+      { id: 'silah', label: 'وصلتُ رحمي (اتصال/زيارة)' },
+      { id: 'sadaqa', label: 'صدقة (ولو ريال)' },
+      { id: 'help', label: 'أعنتُ محتاجاً' },
+      { id: 'ihsan', label: 'إتقان في عملي وإخلاص فيه' },
+    ],
+  },
+];
+
+// Sins (default "no" - generate dot if "yes")
+const SINS = [
+  {
+    id: 'mahramat',
+    title: 'المحرمات (هل وقعت فيها؟)',
+    icon: '⚠️',
+    color: '#8B0000',
+    items: [
+      { id: 'eyes', label: 'النظر إلى محرّم' },
+      { id: 'ghibah', label: 'الغيبة' },
+      { id: 'namima', label: 'النميمة' },
+      { id: 'kidhb', label: 'الكذب' },
+      { id: 'sukhriya', label: 'السخرية أو الاستهزاء' },
+      { id: 'jadal', label: 'الجدال أو المراء' },
+      { id: 'fuhsh', label: 'الفحش أو البذاءة' },
+      { id: 'music', label: 'الاستماع لمحرم (موسيقى/أغاني)' },
+      { id: 'video', label: 'مشاهدة محرم' },
+      { id: 'social_haram', label: 'تعامل محرم مع امرأة أجنبية' },
+      { id: 'riba', label: 'تعامل بالربا' },
+      { id: 'kasb_haram', label: 'كسب من حرام' },
+      { id: 'kibr', label: 'الكِبر أو العُجب' },
+      { id: 'hasad', label: 'الحسد' },
+      { id: 'riya', label: 'الرياء أو السُّمعة' },
+      { id: 'su_zann', label: 'سوء الظن بمسلم' },
+      { id: 'ghadab', label: 'الغضب وعدم التحكم به' },
+      { id: 'tajassus', label: 'التجسس أو الفضول' },
+      { id: 'israf', label: 'الإسراف أو التبذير' },
+    ],
+  },
+];
+
+// =================== STATE ===================
+let currentView = 'heart';
+let currentDateOffset = 0; // 0 = today, 1 = yesterday, etc.
+let currentDate = todayDate();
+let currentData = { virtues: {}, sins: {}, notes: {} };
+let expanded = { salawat: true };
+let saveTimer = null;
+let selectedHistDay = null;
+
+// =================== DATE HELPERS ===================
+function todayDate() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function dateOffset(offset) {
+  const d = new Date();
+  d.setDate(d.getDate() - offset);
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function getOffsetForDate(dateStr) {
+  const today = new Date(todayDate());
+  const d = new Date(dateStr);
+  const diff = Math.round((today - d) / (1000 * 60 * 60 * 24));
+  return diff;
+}
+
+function formatDate(str) {
+  const months = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+  const days = ['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+  const d = new Date(str);
+  return `${days[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+// =================== STORAGE ===================
+function dayKey(dateStr) { return `muhasaba:${dateStr}`; }
+
+function loadDay(dateStr) {
+  try {
+    const raw = localStorage.getItem(dayKey(dateStr));
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    // Migrate old format if needed
+    if (parsed.items && !parsed.virtues) {
+      parsed.virtues = parsed.items;
+      parsed.sins = {};
+      parsed.notes = parsed.notes || {};
+    }
+    return parsed;
+  } catch { return null; }
+}
+
+function saveCurrent() {
+  try {
+    localStorage.setItem(dayKey(currentDate), JSON.stringify(currentData));
+    showStatus('تم الحفظ ✓');
+  } catch (e) {
+    showStatus('خطأ في الحفظ');
+  }
+}
+
+function showStatus(msg) {
+  const el = document.getElementById('saveStatus');
+  el.textContent = msg;
+  setTimeout(() => { el.textContent = ''; }, 1500);
+}
+
+function queueSave() {
+  showStatus('جاري الحفظ...');
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveCurrent, 400);
+}
+
+function getAllHistory() {
+  const keys = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k && k.startsWith('muhasaba:')) keys.push(k);
+  }
+  return keys.sort().reverse();
+}
+
+// =================== DATE NAVIGATION ===================
+function setDateOffset(offset) {
+  currentDateOffset = offset;
+  currentDate = dateOffset(offset);
+  loadCurrent();
+  updateDateUI();
+  render();
+}
+
+function openDatePicker() {
+  const picker = document.getElementById('datePicker');
+  // Limit to past 7 days
+  const minDate = dateOffset(7);
+  const maxDate = todayDate();
+  picker.min = minDate;
+  picker.max = maxDate;
+  picker.value = currentDate;
+  picker.showPicker?.() || picker.click();
+}
+
+function onDatePicked(dateStr) {
+  if (!dateStr) return;
+  currentDate = dateStr;
+  currentDateOffset = getOffsetForDate(dateStr);
+  loadCurrent();
+  updateDateUI();
+  render();
+}
+
+function loadCurrent() {
+  const loaded = loadDay(currentDate);
+  currentData = loaded || { virtues: {}, sins: {}, notes: {} };
+  if (!currentData.virtues) currentData.virtues = {};
+  if (!currentData.sins) currentData.sins = {};
+  if (!currentData.notes) currentData.notes = {};
+}
+
+function updateDateUI() {
+  document.getElementById('todayDate').textContent = formatDate(currentDate);
+
+  // Update date buttons
+  document.querySelectorAll('.date-btn').forEach(b => {
+    const o = b.dataset.offset;
+    if (o !== undefined) {
+      b.classList.toggle('active', parseInt(o) === currentDateOffset);
+    }
+  });
+
+  // Show retroactive banner
+  const banner = document.getElementById('retroBanner');
+  if (currentDateOffset > 0) {
+    banner.style.display = 'block';
+    document.getElementById('retroDate').textContent = formatDate(currentDate);
+  } else {
+    banner.style.display = 'none';
+  }
+}
+
+// =================== VIEW SWITCHING ===================
+function switchView(view) {
+  currentView = view;
+  document.querySelectorAll('.tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.view === view);
+  });
+  selectedHistDay = null;
+  render();
+}
+
+// =================== INTERACTIONS ===================
+function toggleVirtue(catId, itemId) {
+  const k = `${catId}:${itemId}`;
+  currentData.virtues[k] = !currentData.virtues[k];
+  queueSave();
+  renderMuhasaba();
+}
+
+function setSin(catId, itemId, value) {
+  // value: 'yes' (committed sin) | 'no' (didn't commit) | null (not answered)
+  const k = `${catId}:${itemId}`;
+  if (currentData.sins[k] === value) {
+    delete currentData.sins[k]; // toggle off
+  } else {
+    currentData.sins[k] = value;
+  }
+  queueSave();
+  renderMuhasaba();
+}
+
+function setCount(catId, itemId, delta) {
+  const k = `${catId}:${itemId}`;
+  currentData.virtues[k] = Math.max(0, (currentData.virtues[k] || 0) + delta);
+  queueSave();
+  renderMuhasaba();
+}
+
+function toggleExpand(catId) {
+  expanded[catId] = !expanded[catId];
+  renderMuhasaba();
+}
+
+function updateNote(field, value) {
+  currentData.notes[field] = value;
+  queueSave();
+}
+
+// =================== GARDEN LOGIC ===================
+
+// All trackable virtues - each becomes a flower
+const FLOWERS = [
+  // Prayers - on time (most important)
+  { id: 'salawat:fajr_on_time', name: 'الفجر في وقتها', color: '#FFE4B5', petals: 8, type: 'prayer' },
+  { id: 'salawat:dhuhr_on_time', name: 'الظهر في وقتها', color: '#FFD700', petals: 8, type: 'prayer' },
+  { id: 'salawat:asr_on_time', name: 'العصر في وقتها', color: '#FFA500', petals: 8, type: 'prayer' },
+  { id: 'salawat:maghrib_on_time', name: 'المغرب في وقتها', color: '#FF7F50', petals: 8, type: 'prayer' },
+  { id: 'salawat:isha_on_time', name: 'العشاء في وقتها', color: '#4169E1', petals: 8, type: 'prayer' },
+  // Prayers - in jamaa
+  { id: 'salawat:fajr_jamaa', name: 'الفجر جماعة', color: '#FFFACD', petals: 6, type: 'jamaa' },
+  { id: 'salawat:dhuhr_jamaa', name: 'الظهر جماعة', color: '#F0E68C', petals: 6, type: 'jamaa' },
+  { id: 'salawat:asr_jamaa', name: 'العصر جماعة', color: '#DAA520', petals: 6, type: 'jamaa' },
+  { id: 'salawat:maghrib_jamaa', name: 'المغرب جماعة', color: '#CD853F', petals: 6, type: 'jamaa' },
+  { id: 'salawat:isha_jamaa', name: 'العشاء جماعة', color: '#4682B4', petals: 6, type: 'jamaa' },
+  // Sunan
+  { id: 'salawat:fajr_sunnah', name: 'سنة الفجر', color: '#E6E6FA', petals: 5, type: 'sunnah' },
+  { id: 'salawat:dhuhr_sunnah', name: 'سنة الظهر', color: '#DDA0DD', petals: 5, type: 'sunnah' },
+  { id: 'salawat:maghrib_sunnah', name: 'سنة المغرب', color: '#BA55D3', petals: 5, type: 'sunnah' },
+  { id: 'salawat:isha_sunnah', name: 'سنة العشاء', color: '#9370DB', petals: 5, type: 'sunnah' },
+  // Adhkar after prayers
+  { id: 'salawat:fajr_adhkar', name: 'أذكار الفجر', color: '#98FB98', petals: 5, type: 'adhkar' },
+  { id: 'salawat:dhuhr_adhkar', name: 'أذكار الظهر', color: '#90EE90', petals: 5, type: 'adhkar' },
+  { id: 'salawat:asr_adhkar', name: 'أذكار العصر', color: '#7CFC00', petals: 5, type: 'adhkar' },
+  { id: 'salawat:maghrib_adhkar', name: 'أذكار المغرب', color: '#3CB371', petals: 5, type: 'adhkar' },
+  { id: 'salawat:isha_adhkar', name: 'أذكار العشاء', color: '#2E8B57', petals: 5, type: 'adhkar' },
+  // Quran & Dhikr
+  { id: 'quran:wird', name: 'الورد القرآني', color: '#228B22', petals: 8, type: 'quran' },
+  { id: 'quran:adh_wake', name: 'أذكار الاستيقاظ', color: '#FFB6C1', petals: 5, type: 'adhkar' },
+  { id: 'quran:adh_morn', name: 'أذكار الصباح', color: '#FFD700', petals: 6, type: 'adhkar' },
+  { id: 'quran:adh_eve', name: 'أذكار المساء', color: '#FF69B4', petals: 6, type: 'adhkar' },
+  { id: 'quran:adh_sleep', name: 'أذكار النوم', color: '#9370DB', petals: 5, type: 'adhkar' },
+  // Qiyam & Nawafil
+  { id: 'qiyam:qiyam', name: 'قيام الليل', color: '#191970', petals: 8, type: 'qiyam' },
+  { id: 'qiyam:witr', name: 'الوتر', color: '#000080', petals: 6, type: 'qiyam' },
+  { id: 'qiyam:duha', name: 'الضحى', color: '#FFD700', petals: 6, type: 'qiyam' },
+  { id: 'qiyam:saum_nafl', name: 'صيام نافلة', color: '#87CEEB', petals: 6, type: 'qiyam' },
+  // Akhlaq
+  { id: 'akhlaq:birr', name: 'بِر الوالدين', color: '#FF1493', petals: 7, type: 'akhlaq' },
+  { id: 'akhlaq:family', name: 'الإحسان للأهل', color: '#FF69B4', petals: 6, type: 'akhlaq' },
+  { id: 'akhlaq:silah', name: 'صلة الرحم', color: '#DC143C', petals: 6, type: 'akhlaq' },
+  { id: 'akhlaq:sadaqa', name: 'الصدقة', color: '#FFD700', petals: 6, type: 'akhlaq' },
+  { id: 'akhlaq:help', name: 'إعانة المحتاج', color: '#32CD32', petals: 6, type: 'akhlaq' },
+  { id: 'akhlaq:ihsan', name: 'إتقان العمل', color: '#4169E1', petals: 6, type: 'akhlaq' },
+];
+
+// Badge tiers
+const BADGE_TIERS = [
+  { id: 'bronze', name: 'برونزية', days: 7, color: '#CD7F32', icon: '🥉' },
+  { id: 'silver', name: 'فضية', days: 30, color: '#A8A8A8', icon: '🥈' },
+  { id: 'gold', name: 'ذهبية', days: 60, color: '#DAA520', icon: '🥇' },
+  { id: 'diamond', name: 'ماسية', days: 100, color: '#4FC3F7', icon: '💎' },
+];
+
+/**
+ * Calculate the current streak for a specific virtue ID.
+ * Streak = consecutive days (including today) where this virtue was completed.
+ * Returns 0 if not completed today (allows yesterday/today gap of 0).
+ *
+ * Also tracks "wilt level":
+ * - 0 days since last completion = fresh (full color)
+ * - 1-2 days = full
+ * - 3-6 days = wilting
+ * - 7-14 days = severe wilt
+ * - 15+ days = dead
+ */
+function calculateFlowerState(virtueId) {
+  const history = getAllHistory(); // sorted desc (newest first)
+  if (history.length === 0) return { streak: 0, daysSince: Infinity, planted: false };
+
+  let streak = 0;
+  let daysSince = 0;
+  let planted = false;
+  let foundToday = false;
+
+  // Check today first
+  const todayKey = `muhasaba:${todayDate()}`;
+  const todayData = loadDay(todayDate());
+  const isCheckedToday = !!(todayData?.virtues?.[virtueId]);
+
+  if (isCheckedToday) {
+    streak = 1;
+    planted = true;
+    foundToday = true;
+    daysSince = 0;
+
+    // Continue counting backwards
+    for (let i = 1; i < 200; i++) {
+      const dateStr = dateOffset(i);
+      const data = loadDay(dateStr);
+      if (data?.virtues?.[virtueId]) {
+        streak++;
+      } else {
+        break;
+      }
+    }
+  } else {
+    // Not done today - find last day it was done
+    for (let i = 0; i < 200; i++) {
+      const dateStr = dateOffset(i);
+      const data = loadDay(dateStr);
+      if (data?.virtues?.[virtueId]) {
+        planted = true;
+        daysSince = i;
+        // Now count the streak that ended
+        streak = 1;
+        for (let j = i + 1; j < 200; j++) {
+          const d2 = loadDay(dateOffset(j));
+          if (d2?.virtues?.[virtueId]) streak++;
+          else break;
+        }
+        break;
+      }
+    }
+    if (!planted) daysSince = Infinity;
+  }
+
+  // Determine wilt level
+  let wilt = 'fresh'; // fresh | mild | severe | dead
+  if (daysSince === Infinity || !planted) wilt = 'none';
+  else if (daysSince === 0) wilt = 'fresh';
+  else if (daysSince <= 2) wilt = 'fresh';
+  else if (daysSince <= 6) wilt = 'mild';
+  else if (daysSince <= 14) wilt = 'severe';
+  else wilt = 'dead';
+
+  // Get all-time longest streak for badges
+  const longestStreak = calculateLongestStreak(virtueId);
+
+  // Determine earned badge
+  let badge = null;
+  for (let i = BADGE_TIERS.length - 1; i >= 0; i--) {
+    if (longestStreak >= BADGE_TIERS[i].days) {
+      badge = BADGE_TIERS[i];
+      break;
+    }
+  }
+
+  return { streak, daysSince, planted, wilt, longestStreak, badge };
+}
+
+function calculateLongestStreak(virtueId) {
+  const history = getAllHistory();
+  if (history.length === 0) return 0;
+
+  // Get all dates in chronological order
+  const dates = history.map(k => k.replace('muhasaba:','')).sort();
+
+  let longest = 0;
+  let current = 0;
+  let prevDate = null;
+
+  for (const dateStr of dates) {
+    const data = loadDay(dateStr);
+    const isChecked = !!(data?.virtues?.[virtueId]);
+
+    if (isChecked) {
+      if (prevDate) {
+        // Check if consecutive
+        const prev = new Date(prevDate);
+        const cur = new Date(dateStr);
+        const diff = Math.round((cur - prev) / (1000 * 60 * 60 * 24));
+        if (diff === 1) {
+          current++;
+        } else {
+          current = 1;
+        }
+      } else {
+        current = 1;
+      }
+      longest = Math.max(longest, current);
+      prevDate = dateStr;
+    } else {
+      current = 0;
+      prevDate = dateStr;
+    }
+  }
+
+  return longest;
+}
+
+function getAllEarnedBadges() {
+  const earned = [];
+  for (const flower of FLOWERS) {
+    const longest = calculateLongestStreak(flower.id);
+    for (const tier of BADGE_TIERS) {
+      if (longest >= tier.days) {
+        earned.push({ flower, tier });
+      }
+    }
+  }
+  return earned;
+}
+
+/**
+ * Render a flower SVG based on state.
+ * @param {Object} flower - { color, petals }
+ * @param {string} wilt - 'fresh' | 'mild' | 'severe' | 'dead'
+ */
+function renderFlowerSVG(flower, wilt) {
+  let petalColor = flower.color;
+  let stemColor = '#4A7C50';
+  let centerColor = '#FFD700';
+  let opacity = 1;
+
+  if (wilt === 'mild') {
+    opacity = 0.75;
+    stemColor = '#8B7355';
+  } else if (wilt === 'severe') {
+    opacity = 0.5;
+    petalColor = grayifyColor(flower.color, 0.6);
+    stemColor = '#8B7355';
+    centerColor = '#8B7355';
+  } else if (wilt === 'dead') {
+    opacity = 0.4;
+    petalColor = '#9E9E9E';
+    stemColor = '#6B6055';
+    centerColor = '#6B6055';
+  }
+
+  // Generate petals
+  const petals = flower.petals || 6;
+  const petalElements = [];
+  for (let i = 0; i < petals; i++) {
+    const angle = (360 / petals) * i;
+    const droopAngle = wilt === 'severe' ? 15 : wilt === 'dead' ? 30 : 0;
+    petalElements.push(
+      `<ellipse cx="50" cy="28" rx="8" ry="14"
+        fill="${petalColor}"
+        opacity="${opacity}"
+        transform="rotate(${angle + droopAngle} 50 50)"/>`
+    );
+  }
+
+  return `
+    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <!-- Stem -->
+      <path d="M 50 50 Q 48 70, 50 90" stroke="${stemColor}" stroke-width="2.5" fill="none" opacity="${opacity}"/>
+      <!-- Leaf -->
+      <ellipse cx="45" cy="75" rx="6" ry="3" fill="${stemColor}" opacity="${opacity * 0.8}" transform="rotate(-30 45 75)"/>
+      <!-- Petals -->
+      ${petalElements.join('')}
+      <!-- Center -->
+      <circle cx="50" cy="50" r="6" fill="${centerColor}" opacity="${opacity}"/>
+    </svg>
+  `;
+}
+
+function renderSeedSVG() {
+  return `
+    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="50" cy="60" rx="22" ry="10" fill="#8B6914" opacity="0.5"/>
+      <ellipse cx="50" cy="58" rx="20" ry="8" fill="#A0826D"/>
+      <!-- Tiny sprout -->
+      <path d="M 50 58 Q 50 45, 48 40" stroke="#90EE90" stroke-width="1.5" fill="none"/>
+      <ellipse cx="48" cy="40" rx="3" ry="2" fill="#90EE90" opacity="0.8"/>
+    </svg>
+  `;
+}
+
+function grayifyColor(hexColor, amount) {
+  // Mix hex color with gray
+  const hex = hexColor.replace('#','');
+  const r = parseInt(hex.substr(0,2), 16);
+  const g = parseInt(hex.substr(2,2), 16);
+  const b = parseInt(hex.substr(4,2), 16);
+  const gray = 140;
+  const nr = Math.round(r * (1-amount) + gray * amount);
+  const ng = Math.round(g * (1-amount) + gray * amount);
+  const nb = Math.round(b * (1-amount) + gray * amount);
+  return `rgb(${nr},${ng},${nb})`;
+}
+
+
+/**
+ * Returns array of "dots" representing sins across all days.
+ * Each dot has: { sinId, catId, label, date, size (0-1), tawbaCount }
+ *
+ * - A sin committed on a day creates a dot (size = 1)
+ * - Tawba shrinks the dot (each tawba = -0.2 size)
+ * - At size <= 0, dot disappears
+ */
+function calculateHeartDots() {
+  const dots = [];
+  const history = getAllHistory();
+
+  for (const key of history) {
+    const date = key.replace('muhasaba:', '');
+    const data = loadDay(date);
+    if (!data || !data.sins) continue;
+
+    // Process haram sins
+    for (const sinKey of Object.keys(data.sins)) {
+      if (data.sins[sinKey] !== 'yes') continue;
+      // Parse: "mahramat:eyes"
+      const [catId, sinId] = sinKey.split(':');
+      const cat = SINS.find(c => c.id === catId);
+      if (!cat) continue;
+      const item = cat.items.find(i => i.id === sinId);
+      if (!item) continue;
+
+      // Check tawba count for this specific sin instance
+      // Tawba is stored as: tawba:{date}:{catId}:{sinId} = count
+      const tawbaKey = `tawba:${date}:${catId}:${sinId}`;
+      const tawbaCount = parseInt(localStorage.getItem(tawbaKey) || '0');
+
+      const size = Math.max(0, 1 - tawbaCount * 0.2);
+      if (size > 0) {
+        dots.push({
+          sinId, catId, label: item.label, date,
+          size, tawbaCount,
+          color: cat.color,
+          dotKey: `${date}:${catId}:${sinId}`,
+        });
+      }
+    }
+
+    // Process missed prayers (treated as sin)
+    if (data.virtues) {
+      for (const prayer of PRAYERS) {
+        const onTimeKey = `salawat:${prayer.id}_on_time`;
+        // If not marked as prayed on time, treat as missed
+        if (!data.virtues[onTimeKey]) {
+          // Only count if user filled at least one virtue that day (means they did review)
+          const hasAnyEntry = Object.keys(data.virtues).length > 0 ||
+                              Object.keys(data.sins).length > 0;
+          if (hasAnyEntry) {
+            const tawbaKey = `tawba:${date}:salawat:missed_${prayer.id}`;
+            const tawbaCount = parseInt(localStorage.getItem(tawbaKey) || '0');
+            const size = Math.max(0, 1 - tawbaCount * 0.2);
+            if (size > 0) {
+              dots.push({
+                sinId: `missed_${prayer.id}`,
+                catId: 'salawat',
+                label: `ترك صلاة ${prayer.name} في وقتها`,
+                date,
+                size, tawbaCount,
+                color: '#8B0000',
+                dotKey: `${date}:salawat:missed_${prayer.id}`,
+                isMissedPrayer: true,
+              });
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return dots;
+}
+
+function performTawba(dotKey) {
+  const tawbaKey = `tawba:${dotKey}`;
+  const current = parseInt(localStorage.getItem(tawbaKey) || '0');
+  localStorage.setItem(tawbaKey, String(current + 1));
+  render();
+}
+
+// =================== RENDERING ===================
+
+function renderHeart() {
+  const dots = calculateHeartDots();
+  const totalSins = dots.length;
+  const totalTawbas = dots.reduce((sum, d) => sum + d.tawbaCount, 0);
+
+  // Generate dot positions inside the heart shape
+  // Heart anatomical bounds in viewBox 0 0 200 200:
+  // Top: ~y=60, Bottom: ~y=170, Left: ~x=40, Right: ~x=160
+  // Center of heart mass: roughly (100, 110)
+  const dotsHTML = dots.map((dot, i) => {
+    const seed = hashCode(dot.dotKey);
+    const angle = (seed * 137.5) % 360;
+    // Concentrate dots in heart body area
+    const radius = 18 + (seed % 32);
+    const x = 100 + Math.cos(angle * Math.PI / 180) * radius * 0.65;
+    const y = 115 + Math.sin(angle * Math.PI / 180) * radius * 0.55;
+    const r = 2 + dot.size * 2.5;
+    const opacity = 0.55 + dot.size * 0.4;
+    return `<circle cx="${x}" cy="${y}" r="${r}" fill="#1a1a1a" opacity="${opacity}"/>`;
+  }).join('');
+
+  const heartHTML = `
+    <div class="heart-intro">
+      ﴿ يَوْمَ لَا يَنْفَعُ مَالٌ وَلَا بَنُونَ إِلَّا مَنْ أَتَى اللَّهَ بِقَلْبٍ سَلِيمٍ ﴾
+    </div>
+
+    <div class="heart-container">
+      <svg class="heart-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <!-- Heart body gradient: light pink to slightly deeper pink -->
+          <radialGradient id="heartBody" cx="50%" cy="40%" r="60%">
+            <stop offset="0%" stop-color="#FFE4E1"/>
+            <stop offset="40%" stop-color="#FFB6A8"/>
+            <stop offset="100%" stop-color="#D88578"/>
+          </radialGradient>
+          <!-- Highlight on top -->
+          <radialGradient id="heartHighlight" cx="35%" cy="30%" r="25%">
+            <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.5"/>
+            <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+          </radialGradient>
+          <!-- Ventricle shadow -->
+          <linearGradient id="ventricleShadow" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#000000" stop-opacity="0"/>
+            <stop offset="100%" stop-color="#8B3A3A" stop-opacity="0.25"/>
+          </linearGradient>
+          <!-- Aorta -->
+          <linearGradient id="aortaGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#D88578"/>
+            <stop offset="100%" stop-color="#B86555"/>
+          </linearGradient>
+          <!-- Vessels -->
+          <linearGradient id="veinGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#7B95C7"/>
+            <stop offset="100%" stop-color="#5A75A8"/>
+          </linearGradient>
+        </defs>
+
+        <!-- Main heart body - smoother, more rounded -->
+        <path d="M 100 178
+                 C 60 168, 28 135, 25 95
+                 C 23 70, 38 52, 60 50
+                 C 75 49, 88 56, 95 67
+                 C 100 60, 108 56, 118 56
+                 C 135 53, 158 60, 170 80
+                 C 178 100, 175 130, 165 145
+                 C 150 165, 125 175, 100 178 Z"
+              fill="url(#heartBody)"
+              stroke="#A85545"
+              stroke-width="1.2"/>
+
+        <!-- Subtle ventricle groove -->
+        <path d="M 100 75 Q 96 115, 100 172"
+              fill="none"
+              stroke="#A85545"
+              stroke-width="0.6"
+              opacity="0.35"/>
+
+        <!-- Right side subtle shadow -->
+        <path d="M 100 75 Q 96 115, 100 172 C 80 168, 55 150, 45 125 C 50 105, 75 85, 100 75 Z"
+              fill="url(#ventricleShadow)"
+              opacity="0.3"/>
+
+        <!-- Coronary arteries on surface -->
+        <path d="M 90 85 Q 70 100, 65 120 Q 70 138, 82 148" fill="none" stroke="#A85545" stroke-width="1" opacity="0.55"/>
+        <path d="M 110 88 Q 130 105, 138 125 Q 132 148, 118 158" fill="none" stroke="#A85545" stroke-width="1" opacity="0.55"/>
+        <path d="M 80 105 Q 65 110, 55 115" fill="none" stroke="#A85545" stroke-width="0.7" opacity="0.45"/>
+        <path d="M 120 115 Q 142 120, 152 122" fill="none" stroke="#A85545" stroke-width="0.7" opacity="0.45"/>
+
+        <!-- Soft highlight -->
+        <ellipse cx="75" cy="82" rx="22" ry="17" fill="url(#heartHighlight)" opacity="0.55"/>
+
+        <!-- Sins as dark spots ON the heart -->
+        ${dotsHTML}
+      </svg>
+    </div>
+
+    <div class="heart-stats">
+      <div class="heart-stat" style="border-color:#8B0000">
+        <div class="heart-stat-val" style="color:#8B0000">${totalSins}</div>
+        <div class="heart-stat-lbl">نقاط في القلب</div>
+      </div>
+      <div class="heart-stat" style="border-color:#2F5233">
+        <div class="heart-stat-val" style="color:#2F5233">${totalTawbas}</div>
+        <div class="heart-stat-lbl">توبات مسجّلة</div>
+      </div>
+    </div>
+
+    ${totalSins === 0 ? `
+      <div class="heart-empty">
+        🤍 قلبك نظيف، الحمد لله<br>
+        <span style="font-size:13px; font-weight:normal">قال ﷺ: «إنَّ المؤمنَ إذا أذنبَ ذنبًا كانت نُكتةٌ سوداءُ في قلبِه»</span>
+      </div>
+    ` : `
+      <button class="heart-action" onclick="switchView('tawba')">
+        📿 اذهب إلى صفحة التوبة
+      </button>
+    `}
+
+    <div class="heart-quote">
+      قال النبي ﷺ: <strong>«إنَّ المؤمنَ إذا أذنبَ ذنبًا كانت نُكتةٌ سوداءُ في قلبِه، فإن تابَ ونَزَعَ واستغفَرَ صُقِلَ قلبُه، وإن زادَ زادت»</strong>
+    </div>
+  `;
+
+  document.getElementById('mainContent').innerHTML = `<div class="heart-page">${heartHTML}</div>`;
+}
+
+function hashCode(str) {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) {
+    h = ((h << 5) - h) + str.charCodeAt(i);
+    h |= 0;
+  }
+  return Math.abs(h);
+}
+
+function renderMuhasaba() {
+  let html = `
+    <div class="banner">
+      <div class="banner-icon">🤲</div>
+      <div class="banner-text">قال عمر رضي الله عنه: <em>«حاسِبوا أنفسَكم قبل أن تُحاسَبوا»</em></div>
+    </div>
+  `;
+
+  // === VIRTUES (encouragement) ===
+  for (const cat of VIRTUES) {
+    const isExp = expanded[cat.id];
+    let bodyHTML = '';
+    let scoreText = '';
+
+    if (cat.isPrayers) {
+      // Special prayer rendering
+      let done = 0, total = 0;
+      for (const prayer of PRAYERS) {
+        const aspects = [
+          { id: `${prayer.id}_on_time`, label: 'في وقتها' },
+          { id: `${prayer.id}_jamaa`, label: 'في الجماعة' },
+        ];
+        if (prayer.hasSunnah) {
+          aspects.push({ id: `${prayer.id}_sunnah`, label: 'السنن الراتبة' });
+        }
+        aspects.push({ id: `${prayer.id}_adhkar`, label: 'الأذكار بعدها' });
+
+        bodyHTML += `<div class="sub-header">${prayer.name}</div>`;
+        for (const asp of aspects) {
+          const k = `salawat:${asp.id}`;
+          const checked = !!currentData.virtues[k];
+          total++;
+          if (checked) done++;
+          bodyHTML += `
+            <div class="check-item ${checked ? 'checked' : ''}" onclick="toggleVirtue('salawat','${asp.id}')">
+              <div class="checkbox ${checked ? 'checked' : ''}" style="${checked ? `background:${cat.color};border-color:${cat.color}` : ''}">
+                <span class="checkmark">✓</span>
+              </div>
+              <div class="item-label ${checked ? 'dim' : ''}">${asp.label}</div>
+            </div>
+          `;
+        }
+      }
+      scoreText = `${done}/${total}`;
+    } else {
+      // Regular virtue category
+      let done = 0, total = 0;
+      for (const item of cat.items) {
+        const k = `${cat.id}:${item.id}`;
+        const checked = !!currentData.virtues[k];
+        total++;
+        if (checked) done++;
+        bodyHTML += `
+          <div class="check-item ${checked ? 'checked' : ''}" onclick="toggleVirtue('${cat.id}','${item.id}')">
+            <div class="checkbox ${checked ? 'checked' : ''}" style="${checked ? `background:${cat.color};border-color:${cat.color}` : ''}">
+              <span class="checkmark">✓</span>
+            </div>
+            <div class="item-label ${checked ? 'dim' : ''}">${item.label}</div>
+          </div>
+        `;
+      }
+      scoreText = `${done}/${total}`;
+    }
+
+    html += `
+      <div class="category">
+        <div class="cat-header" style="background:${cat.color}" onclick="toggleExpand('${cat.id}')">
+          <div class="cat-header-left">
+            <span class="cat-icon">${cat.icon}</span>
+            <span class="cat-title">${cat.title}</span>
+          </div>
+          <div class="cat-header-right">
+            <span class="cat-score">${scoreText}</span>
+            <span class="cat-arrow ${isExp ? '' : 'collapsed'}">▲</span>
+          </div>
+        </div>
+        <div class="cat-body ${isExp ? 'expanded' : ''}">${bodyHTML}</div>
+      </div>
+    `;
+  }
+
+  // === SINS ===
+  for (const cat of SINS) {
+    const isExp = expanded[cat.id];
+    let bodyHTML = '';
+    let committed = 0, answered = 0;
+
+    for (const item of cat.items) {
+      const k = `${cat.id}:${item.id}`;
+      const value = currentData.sins[k]; // 'yes' | 'no' | undefined
+      if (value === 'yes') { committed++; answered++; }
+      else if (value === 'no') { answered++; }
+
+      bodyHTML += `
+        <div class="sin-item">
+          <div class="sin-label">${item.label}</div>
+          <div class="sin-buttons">
+            <button class="sin-btn ${value === 'no' ? 'selected-no' : ''}" onclick="setSin('${cat.id}','${item.id}','no')">
+              لم أفعل
+            </button>
+            <button class="sin-btn ${value === 'yes' ? 'selected-yes' : ''}" onclick="setSin('${cat.id}','${item.id}','yes')">
+              فعلت
+            </button>
+          </div>
+          ${value === 'no' ? '<div class="sin-help">احفظ براءتي، استغفر الله وأتوب إليه 🤍</div>' : ''}
+          ${value === 'yes' ? '<div class="sin-help">ستظهر كنقطة في قلبك، فبادر إلى التوبة 📿</div>' : ''}
+        </div>
+      `;
+    }
+
+    const scoreText = `${committed} ذنب${committed === 1 ? '' : committed === 2 ? 'ان' : 'وب'}`;
+    html += `
+      <div class="category">
+        <div class="cat-header" style="background:${cat.color}" onclick="toggleExpand('${cat.id}')">
+          <div class="cat-header-left">
+            <span class="cat-icon">${cat.icon}</span>
+            <span class="cat-title">${cat.title}</span>
+          </div>
+          <div class="cat-header-right">
+            ${committed > 0 ? `<span class="cat-score">${committed}</span>` : ''}
+            <span class="cat-arrow ${isExp ? '' : 'collapsed'}">▲</span>
+          </div>
+        </div>
+        <div class="cat-body ${isExp ? 'expanded' : ''}">${bodyHTML}</div>
+      </div>
+    `;
+  }
+
+  // REFLECTION
+  const n = currentData.notes;
+  html += `
+    <div class="reflection">
+      <div class="reflection-title">التأمل اليومي</div>
+      <div class="notes-group">
+        <label class="notes-label">🤍 ما النعمة التي أحمد الله عليها؟</label>
+        <textarea rows="2" onchange="updateNote('thanks', this.value)" placeholder="...">${n.thanks || ''}</textarea>
+      </div>
+      <div class="notes-group">
+        <label class="notes-label">📿 ذنب أو تقصير أتوب منه</label>
+        <textarea rows="2" onchange="updateNote('sin', this.value)" placeholder="استغفر الله وأتوب إليه...">${n.sin || ''}</textarea>
+      </div>
+      <div class="notes-group">
+        <label class="notes-label">☀️ نيتي للغد إن أحياني الله</label>
+        <textarea rows="2" onchange="updateNote('tomorrow', this.value)" placeholder="غداً بإذن الله...">${n.tomorrow || ''}</textarea>
+      </div>
+    </div>
+
+    <div class="dua-card">
+      <div class="dua-title">دعاء الختام</div>
+      <div class="dua-text">اللهم ما عَمِلتُ اليوم من خيرٍ فتقبَّله مني، وما عَمِلتُ من سوءٍ فاغفره لي، وأَعِنّي على ما هو خيرٌ منه. اللهم لا تجعل غدي شراً من يومي، ولا يومي شراً من أمسي، وارزقني العزم على الخير، والثبات عليه.</div>
+    </div>
+  `;
+
+  document.getElementById('mainContent').innerHTML = html;
+}
+
+function renderTawba() {
+  const dots = calculateHeartDots();
+
+  if (dots.length === 0) {
+    document.getElementById('mainContent').innerHTML = `
+      <div class="tawba-empty">
+        <div class="tawba-empty-icon">🤍</div>
+        <div class="tawba-empty-text">قلبك نظيف، الحمد لله</div>
+        <div class="tawba-empty-sub">
+          لا توجد نقاط تحتاج توبة حالياً.<br>
+          استمر في طاعة الله، وأكثر من الاستغفار.
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  // Group by sin type
+  const grouped = {};
+  for (const dot of dots) {
+    const key = `${dot.catId}:${dot.sinId}`;
+    if (!grouped[key]) {
+      grouped[key] = {
+        label: dot.label,
+        catId: dot.catId,
+        sinId: dot.sinId,
+        instances: [],
+        color: dot.color,
+      };
+    }
+    grouped[key].instances.push(dot);
+  }
+
+  let html = `
+    <div class="banner" style="background:#FFF8E7; border-color:#D4A574">
+      <div class="banner-icon">📿</div>
+      <div class="banner-text">
+        هنا نقاط قلبك التي تحتاج توبة. اضغط "تبت إلى الله" بعد كل توبة صادقة. <strong>5 توبات تمحو النقطة.</strong>
+      </div>
+    </div>
+  `;
+
+  for (const key of Object.keys(grouped)) {
+    const group = grouped[key];
+    // Show one card per instance (or aggregate)
+    for (const inst of group.instances) {
+      const progress = Math.round((inst.tawbaCount / 5) * 100);
+      html += `
+        <div class="tawba-card" style="border-right-color:${inst.color}">
+          <div class="tawba-card-header">
+            <div class="tawba-card-title">${inst.label}</div>
+            <div class="tawba-card-count" style="background:${inst.color}">${formatDate(inst.date)}</div>
+          </div>
+          <div class="tawba-progress-label">التوبات: ${inst.tawbaCount} / 5</div>
+          <div class="tawba-progress">
+            <div class="tawba-progress-fill" style="width:${progress}%"></div>
+          </div>
+          <div class="tawba-placeholder">
+            ⚙️ المحتوى الشرعي لهذا الذنب (دعاء التوبة + الحكم + الكفارة) سيُضاف في المرحلة الثانية بإذن الله.
+          </div>
+          <button class="tawba-btn" onclick="performTawba('${inst.dotKey}')">
+            تبت إلى الله واستغفرته 🤲
+          </button>
+        </div>
+      `;
+    }
+  }
+
+  document.getElementById('mainContent').innerHTML = html;
+}
+
+/**
+ * Render a plant SVG at a given growth stage.
+ * Stages: 'seed' (0-1 day) | 'sprout' (2-3 days) | 'small' (4-6 days) | 'full' (7+ days)
+ * Wilt levels: 'fresh' | 'mild' | 'severe' | 'dead'
+ */
+function renderPlantSVG(streak, wilt, color, petals = 6, sizeScale = 1) {
+  // Determine growth stage from streak
+  let stage;
+  if (streak === 0) stage = 'none';
+  else if (streak === 1) stage = 'seed';
+  else if (streak <= 3) stage = 'sprout';
+  else if (streak <= 6) stage = 'small';
+  else stage = 'full';
+
+  // Wilt affects color and opacity
+  let petalColor = color;
+  let stemColor = '#4A7C50';
+  let leafColor = '#5DAA3D';
+  let opacity = 1;
+  let droop = 0;
+
+  if (wilt === 'mild') {
+    opacity = 0.75;
+    stemColor = '#8B7355';
+    leafColor = '#A0826D';
+  } else if (wilt === 'severe') {
+    opacity = 0.5;
+    petalColor = grayifyColor(color, 0.65);
+    stemColor = '#6B5D4F';
+    leafColor = '#6B5D4F';
+    droop = 20;
+  } else if (wilt === 'dead') {
+    opacity = 0.35;
+    petalColor = '#7A6B5C';
+    stemColor = '#5A4F42';
+    leafColor = '#5A4F42';
+    droop = 35;
+  }
+
+  const s = sizeScale;
+
+  if (stage === 'none' || stage === 'seed') {
+    // Tiny seedling
+    return `<g opacity="${opacity}">
+      <ellipse cx="0" cy="${0 * s}" rx="${3 * s}" ry="${1.5 * s}" fill="#8B6914"/>
+      <path d="M 0 0 Q 0 ${-3 * s}, ${-1 * s} ${-5 * s}" stroke="#90EE90" stroke-width="${0.8 * s}" fill="none"/>
+      <ellipse cx="${-1 * s}" cy="${-5 * s}" rx="${1.5 * s}" ry="${0.8 * s}" fill="#90EE90"/>
+    </g>`;
+  } else if (stage === 'sprout') {
+    // Small sprout with 2 leaves
+    return `<g opacity="${opacity}" transform="rotate(${droop})">
+      <path d="M 0 0 Q 0 ${-6 * s}, 0 ${-10 * s}" stroke="${stemColor}" stroke-width="${1.2 * s}" fill="none"/>
+      <ellipse cx="${-3 * s}" cy="${-6 * s}" rx="${2.5 * s}" ry="${1.3 * s}" fill="${leafColor}" transform="rotate(-30 ${-3 * s} ${-6 * s})"/>
+      <ellipse cx="${3 * s}" cy="${-7 * s}" rx="${2.5 * s}" ry="${1.3 * s}" fill="${leafColor}" transform="rotate(30 ${3 * s} ${-7 * s})"/>
+    </g>`;
+  } else if (stage === 'small') {
+    // Small flower bud
+    const petalRadius = 2.5 * s;
+    const petalElements = [];
+    for (let i = 0; i < petals; i++) {
+      const angle = (360 / petals) * i;
+      petalElements.push(
+        `<ellipse cx="0" cy="${-14 * s}" rx="${petalRadius}" ry="${4 * s}"
+          fill="${petalColor}" opacity="${opacity}"
+          transform="rotate(${angle} 0 ${-12 * s})"/>`
+      );
+    }
+    return `<g transform="rotate(${droop})" opacity="${opacity}">
+      <path d="M 0 0 Q 0 ${-8 * s}, 0 ${-12 * s}" stroke="${stemColor}" stroke-width="${1.5 * s}" fill="none"/>
+      <ellipse cx="${-3 * s}" cy="${-8 * s}" rx="${3 * s}" ry="${1.5 * s}" fill="${leafColor}" transform="rotate(-30 ${-3 * s} ${-8 * s})"/>
+      ${petalElements.join('')}
+      <circle cx="0" cy="${-12 * s}" r="${1.5 * s}" fill="#FFD700"/>
+    </g>`;
+  } else {
+    // Full flower
+    const petalRadius = 4 * s;
+    const petalElements = [];
+    for (let i = 0; i < petals; i++) {
+      const angle = (360 / petals) * i;
+      petalElements.push(
+        `<ellipse cx="0" cy="${-20 * s}" rx="${petalRadius}" ry="${7 * s}"
+          fill="${petalColor}" opacity="${opacity}"
+          transform="rotate(${angle} 0 ${-16 * s})"/>`
+      );
+    }
+    return `<g transform="rotate(${droop})" opacity="${opacity}">
+      <path d="M 0 0 Q ${-1 * s} ${-10 * s}, 0 ${-16 * s}" stroke="${stemColor}" stroke-width="${1.8 * s}" fill="none"/>
+      <ellipse cx="${-4 * s}" cy="${-9 * s}" rx="${4 * s}" ry="${2 * s}" fill="${leafColor}" transform="rotate(-30 ${-4 * s} ${-9 * s})"/>
+      <ellipse cx="${4 * s}" cy="${-13 * s}" rx="${3 * s}" ry="${1.7 * s}" fill="${leafColor}" transform="rotate(35 ${4 * s} ${-13 * s})"/>
+      ${petalElements.join('')}
+      <circle cx="0" cy="${-16 * s}" r="${2.5 * s}" fill="#FFD700"/>
+    </g>`;
+  }
+}
+
+/**
+ * Generate stable position for a plant on the landscape based on its ID.
+ * Returns { x, y, sizeScale } in landscape coordinate system (0-100 x 0-100).
+ * Positions are spread across the meadow area (y: 55-92).
+ */
+function getPlantPosition(plantId, index, total) {
+  const seed = hashCode(plantId);
+  // X: spread across width with some randomness
+  const xBase = (index / Math.max(1, total - 1)) * 90 + 5;
+  const xJitter = ((seed % 7) - 3) * 1.5;
+  const x = Math.max(5, Math.min(95, xBase + xJitter));
+
+  // Y: random within meadow area (foreground/midground)
+  const y = 62 + (seed % 30);
+
+  // Size: plants in foreground (higher y) are bigger
+  const sizeScale = 0.7 + (y - 62) / 30 * 0.6;
+
+  return { x, y, sizeScale };
+}
+
+function renderGarden() {
+  const flowersState = FLOWERS.map(f => ({
+    ...f,
+    state: calculateFlowerState(f.id),
+  }));
+
+  const planted = flowersState.filter(f => f.state.planted);
+  const alive = planted.filter(f => f.state.wilt !== 'dead');
+  const fresh = planted.filter(f => f.state.wilt === 'fresh');
+  const wilting = planted.filter(f => f.state.wilt === 'mild' || f.state.wilt === 'severe');
+  const dead = planted.filter(f => f.state.wilt === 'dead');
+
+  const earnedBadges = getAllEarnedBadges();
+
+  // Sort planted by streak (longest first) for stable display
+  const allPlanted = [...planted].sort((a, b) => b.state.streak - a.state.streak);
+
+  // Render landscape SVG
+  // ViewBox: 0 0 400 300 (4:3 ratio)
+  // Sky: 0-160, Hills: 160-200, Meadow: 200-300
+  const plantElements = allPlanted.map((f, i) => {
+    const pos = getPlantPosition(f.id, i, allPlanted.length);
+    // Convert from 0-100 to viewBox coords
+    const svgX = (pos.x / 100) * 400;
+    const svgY = (pos.y / 100) * 300;
+    return `<g transform="translate(${svgX}, ${svgY})">
+      ${renderPlantSVG(f.state.streak, f.state.wilt, f.color, f.petals, pos.sizeScale)}
+    </g>`;
+  }).join('');
+
+  const landscapeSVG = `
+    <svg class="landscape-svg" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <!-- Sky gradient -->
+        <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#7BB8E8"/>
+          <stop offset="60%" stop-color="#B5DCF0"/>
+          <stop offset="100%" stop-color="#E8F5F2"/>
+        </linearGradient>
+        <!-- Far hills -->
+        <linearGradient id="hillFarGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#7FA88E"/>
+          <stop offset="100%" stop-color="#9FBFA8"/>
+        </linearGradient>
+        <!-- Near hills -->
+        <linearGradient id="hillNearGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#5A9A3D"/>
+          <stop offset="100%" stop-color="#7BB358"/>
+        </linearGradient>
+        <!-- Meadow grass -->
+        <linearGradient id="meadowGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#7BB358"/>
+          <stop offset="50%" stop-color="#9FCE6F"/>
+          <stop offset="100%" stop-color="#BDDD8C"/>
+        </linearGradient>
+        <!-- Sun glow -->
+        <radialGradient id="sunGrad" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#FFF9E0" stop-opacity="1"/>
+          <stop offset="50%" stop-color="#FFE680" stop-opacity="0.6"/>
+          <stop offset="100%" stop-color="#FFD54F" stop-opacity="0"/>
+        </radialGradient>
+        <!-- Grass texture pattern -->
+        <pattern id="grassTexture" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
+          <path d="M 2 8 L 2 4 M 5 8 L 5 5 M 7 8 L 7 6" stroke="#4A7C50" stroke-width="0.4" opacity="0.5"/>
+        </pattern>
+      </defs>
+
+      <!-- Sky -->
+      <rect width="400" height="300" fill="url(#skyGrad)"/>
+
+      <!-- Sun -->
+      <circle cx="320" cy="60" r="50" fill="url(#sunGrad)"/>
+      <circle cx="320" cy="60" r="22" fill="#FFF4C2" opacity="0.9"/>
+
+      <!-- Clouds -->
+      <g opacity="0.85" fill="white">
+        <ellipse cx="80" cy="45" rx="28" ry="9"/>
+        <ellipse cx="95" cy="40" rx="20" ry="7"/>
+        <ellipse cx="65" cy="42" rx="16" ry="6"/>
+
+        <ellipse cx="220" cy="70" rx="22" ry="7"/>
+        <ellipse cx="235" cy="66" rx="14" ry="5"/>
+      </g>
+
+      <!-- Birds in the distance -->
+      <g stroke="#5C6F7D" stroke-width="1.2" fill="none" opacity="0.7">
+        <path d="M 140 80 Q 144 76, 148 80 Q 152 76, 156 80"/>
+        <path d="M 175 95 Q 178 92, 181 95 Q 184 92, 187 95"/>
+      </g>
+
+      <!-- Far mountains/hills -->
+      <path d="M 0 175 Q 50 145, 100 160 Q 150 130, 200 155 Q 250 135, 300 158 Q 350 145, 400 165 L 400 300 L 0 300 Z"
+            fill="url(#hillFarGrad)" opacity="0.85"/>
+
+      <!-- Near hills -->
+      <path d="M 0 200 Q 80 175, 160 195 Q 240 175, 320 200 Q 360 190, 400 205 L 400 300 L 0 300 Z"
+            fill="url(#hillNearGrad)"/>
+
+      <!-- Trees on hills -->
+      <g>
+        <!-- Tree 1 (far left) -->
+        <ellipse cx="40" cy="195" rx="8" ry="10" fill="#3D7A2A"/>
+        <rect x="38" y="200" width="4" height="6" fill="#6B4423"/>
+        <!-- Tree 2 -->
+        <ellipse cx="135" cy="188" rx="10" ry="13" fill="#3D7A2A"/>
+        <rect x="133" y="195" width="4" height="8" fill="#6B4423"/>
+        <!-- Tree 3 -->
+        <ellipse cx="280" cy="192" rx="9" ry="11" fill="#3D7A2A"/>
+        <rect x="278" y="198" width="4" height="7" fill="#6B4423"/>
+        <!-- Tree 4 -->
+        <ellipse cx="370" cy="198" rx="7" ry="9" fill="#3D7A2A"/>
+        <rect x="368" y="203" width="3" height="6" fill="#6B4423"/>
+      </g>
+
+      <!-- Meadow (foreground grass) -->
+      <path d="M 0 210 L 400 210 L 400 300 L 0 300 Z" fill="url(#meadowGrad)"/>
+      <path d="M 0 210 L 400 210 L 400 300 L 0 300 Z" fill="url(#grassTexture)"/>
+
+      <!-- Grass tufts scattered -->
+      <g stroke="#4A7C50" stroke-width="1.2" fill="none" opacity="0.7">
+        <path d="M 30 250 L 30 244 M 32 250 L 33 246 M 28 250 L 27 245"/>
+        <path d="M 100 270 L 100 263 M 102 270 L 103 265 M 98 270 L 97 264"/>
+        <path d="M 180 240 L 180 234 M 182 240 L 183 236 M 178 240 L 177 235"/>
+        <path d="M 260 265 L 260 259 M 262 265 L 263 261 M 258 265 L 257 260"/>
+        <path d="M 340 245 L 340 239 M 342 245 L 343 241 M 338 245 L 337 240"/>
+        <path d="M 60 285 L 60 278 M 62 285 L 63 280 M 58 285 L 57 279"/>
+        <path d="M 220 290 L 220 283 M 222 290 L 223 285 M 218 290 L 217 284"/>
+        <path d="M 380 280 L 380 273 M 382 280 L 383 275 M 378 280 L 377 274"/>
+      </g>
+
+      <!-- Plants planted on landscape -->
+      ${plantElements}
+    </svg>
+  `;
+
+  let html = `
+    <div class="garden-page">
+      <div class="garden-intro">
+        🌿 <strong>حديقة الطاعات</strong> 🌿<br>
+        <span style="font-size:12px">كل طاعة تواظب عليها تنبت في حديقتك. المداومة تُنمي، والانقطاع يُذبِل.</span>
+      </div>
+
+      <div class="garden-stats-row">
+        <div class="garden-stat" style="border-color:#4A7C50">
+          <div class="garden-stat-val" style="color:#4A7C50">${fresh.length}</div>
+          <div class="garden-stat-lbl">زهرة مزهرة</div>
+        </div>
+        <div class="garden-stat" style="border-color:#8B6914">
+          <div class="garden-stat-val" style="color:#8B6914">${alive.length}</div>
+          <div class="garden-stat-lbl">نبتة حية</div>
+        </div>
+        <div class="garden-stat" style="border-color:#B8860B">
+          <div class="garden-stat-val" style="color:#B8860B">${earnedBadges.length}</div>
+          <div class="garden-stat-lbl">شارة مكتسبة</div>
+        </div>
+      </div>
+
+      <div class="landscape-container">
+        ${landscapeSVG}
+      </div>
+  `;
+
+  // Badges section
+  if (earnedBadges.length > 0) {
+    html += `
+      <div class="badges-section">
+        <div class="badges-title">🏆 شاراتك المكتسبة</div>
+        <div class="badges-grid">
+    `;
+    for (const eb of earnedBadges) {
+      html += `
+        <div class="earned-badge">
+          <div class="earned-badge-icon">${eb.tier.icon}</div>
+          <div class="earned-badge-name">${eb.flower.name}</div>
+          <div class="earned-badge-tier badge-${eb.tier.id}">${eb.tier.name}</div>
+        </div>
+      `;
+    }
+    html += `</div></div>`;
+  }
+
+  // Plants list (text-based for clarity)
+  if (planted.length > 0) {
+    html += `<div class="plants-list">
+      <div class="plants-list-title">🌱 تفاصيل نباتاتك</div>`;
+
+    if (fresh.length > 0) {
+      html += `<div class="plants-list-section">
+        <div class="plants-list-section-title">🌸 مزهرة (${fresh.length})</div>`;
+      for (const f of fresh) {
+        const miniSVG = renderMiniPlant(f.color, f.petals, f.state.streak, f.state.wilt);
+        html += `
+          <div class="plant-row">
+            <svg class="plant-row-mini" viewBox="-20 -30 40 40">${miniSVG}</svg>
+            <div class="plant-row-info">
+              <div class="plant-row-name">${f.name}</div>
+              <div class="plant-row-detail">${getStageText(f.state.streak)}</div>
+            </div>
+            <div class="plant-row-streak">🔥 ${f.state.streak} يوم</div>
+          </div>
+        `;
+      }
+      html += `</div>`;
+    }
+
+    if (wilting.length > 0) {
+      html += `<div class="plants-list-section">
+        <div class="plants-list-section-title">🥀 تذبل - تحتاج عناية (${wilting.length})</div>`;
+      for (const f of wilting) {
+        const miniSVG = renderMiniPlant(f.color, f.petals, f.state.streak, f.state.wilt);
+        html += `
+          <div class="plant-row">
+            <svg class="plant-row-mini" viewBox="-20 -30 40 40">${miniSVG}</svg>
+            <div class="plant-row-info">
+              <div class="plant-row-name">${f.name}</div>
+              <div class="plant-row-detail">أحيها بطاعة جديدة</div>
+            </div>
+            <div class="plant-row-streak wilting">منذ ${f.state.daysSince} يوم</div>
+          </div>
+        `;
+      }
+      html += `</div>`;
+    }
+
+    if (dead.length > 0) {
+      html += `<div class="plants-list-section">
+        <div class="plants-list-section-title">⚰️ ماتت - يمكن زرعها من جديد (${dead.length})</div>`;
+      for (const f of dead) {
+        html += `
+          <div class="plant-row">
+            <svg class="plant-row-mini" viewBox="-20 -30 40 40">
+              <g opacity="0.4">
+                <path d="M 0 0 Q 0 -8, 0 -12" stroke="#5A4F42" stroke-width="1.5" fill="none"/>
+                <ellipse cx="0" cy="-14" rx="3" ry="2" fill="#7A6B5C"/>
+              </g>
+            </svg>
+            <div class="plant-row-info">
+              <div class="plant-row-name">${f.name}</div>
+              <div class="plant-row-detail">عاود الالتزام لتنبت مرة أخرى</div>
+            </div>
+            <div class="plant-row-streak dead">ميتة</div>
+          </div>
+        `;
+      }
+      html += `</div>`;
+    }
+
+    html += `</div>`;
+  } else {
+    html += `
+      <div class="garden-empty">
+        🌱 حديقتك فارغة، تنتظر بذورك<br>
+        <span style="font-size:12px">ابدأ بأداء أي طاعة في صفحة المحاسبة لتنبت أول بذرة</span>
+      </div>
+    `;
+  }
+
+  html += `</div>`;
+  document.getElementById('mainContent').innerHTML = html;
+}
+
+function renderMiniPlant(color, petals, streak, wilt) {
+  return renderPlantSVG(streak, wilt, color, petals, 1);
+}
+
+function getStageText(streak) {
+  if (streak === 1) return 'بذرة (يوم واحد)';
+  if (streak <= 3) return `برعم (${streak} أيام)`;
+  if (streak <= 6) return `زهرة صغيرة (${streak} أيام)`;
+  if (streak < 30) return `زهرة كاملة (${streak} يوم)`;
+  return `زهرة راسخة (${streak} يوم)`;
+}
+
+function renderHistory() {
+  if (selectedHistDay) { renderHistDay(); return; }
+  const hist = getAllHistory();
+  if (hist.length === 0) {
+    document.getElementById('mainContent').innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">📋</div>
+        <div class="empty-text">لا توجد محاسبات سابقة بعد</div>
+        <div class="empty-hint">ابدأ بمحاسبة اليوم وستظهر هنا تدريجياً</div>
+      </div>`;
+    return;
+  }
+  document.getElementById('mainContent').innerHTML = `
+    <div class="hist-title">سجل المحاسبات (${hist.length})</div>
+    ${hist.map(k => {
+      const date = k.replace('muhasaba:','');
+      const data = loadDay(date);
+      const sins = data?.sins ? Object.values(data.sins).filter(v => v === 'yes').length : 0;
+      return `
+        <div class="hist-row" onclick="selectedHistDay='${k}'; render();">
+          <div>
+            <div style="font-weight:bold">${formatDate(date)}</div>
+            ${sins > 0 ? `<div style="font-size:12px;color:#8B0000;margin-top:2px">${sins} ذنب${sins===1?'':sins===2?'ان':'وب'}</div>` : '<div style="font-size:12px;color:#2F5233;margin-top:2px">قلب نظيف 🤍</div>'}
+          </div>
+          <span class="hist-row-arrow">←</span>
+        </div>
+      `;
+    }).join('')}
+  `;
+}
+
+function renderHistDay() {
+  const date = selectedHistDay.replace('muhasaba:','');
+  const data = loadDay(date);
+  if (!data) { selectedHistDay = null; render(); return; }
+
+  let html = `
+    <button class="back-btn" onclick="selectedHistDay=null; render();">→ رجوع للسجل</button>
+    <div style="font-size:18px;font-weight:bold;color:#2F5233;text-align:center;margin-bottom:14px">
+      ${formatDate(date)}
+    </div>
+  `;
+
+  // Show committed sins
+  const committedSins = [];
+  for (const cat of SINS) {
+    for (const item of cat.items) {
+      const k = `${cat.id}:${item.id}`;
+      if (data.sins?.[k] === 'yes') {
+        committedSins.push({ label: item.label, color: cat.color });
+      }
+    }
+  }
+  if (committedSins.length > 0) {
+    html += `<div class="category"><div class="cat-header" style="background:#8B0000">
+      <div class="cat-header-left"><span class="cat-icon">⚠️</span><span class="cat-title">الذنوب المعترَف بها</span></div>
+    </div><div class="cat-body expanded">`;
+    for (const s of committedSins) {
+      html += `<div style="padding:10px 16px;border-bottom:1px solid #F5EFE6;color:#8B0000">• ${s.label}</div>`;
+    }
+    html += `</div></div>`;
+  }
+
+  // Show virtues done
+  const virtuesDone = [];
+  for (const cat of VIRTUES) {
+    if (cat.isPrayers) {
+      for (const prayer of PRAYERS) {
+        const aspects = [
+          { id: `${prayer.id}_on_time`, label: `${prayer.name}: في وقتها` },
+          { id: `${prayer.id}_jamaa`, label: `${prayer.name}: في الجماعة` },
+        ];
+        if (prayer.hasSunnah) aspects.push({ id: `${prayer.id}_sunnah`, label: `${prayer.name}: السنن` });
+        aspects.push({ id: `${prayer.id}_adhkar`, label: `${prayer.name}: الأذكار` });
+        for (const a of aspects) {
+          if (data.virtues?.[`salawat:${a.id}`]) virtuesDone.push(a.label);
+        }
+      }
+    } else {
+      for (const item of cat.items) {
+        if (data.virtues?.[`${cat.id}:${item.id}`]) virtuesDone.push(item.label);
+      }
+    }
+  }
+  if (virtuesDone.length > 0) {
+    html += `<div class="category"><div class="cat-header" style="background:#2F5233">
+      <div class="cat-header-left"><span class="cat-icon">✓</span><span class="cat-title">الطاعات المنجزة (${virtuesDone.length})</span></div>
+    </div><div class="cat-body expanded">`;
+    for (const v of virtuesDone) {
+      html += `<div style="padding:8px 16px;border-bottom:1px solid #F5EFE6;color:#2F5233;font-size:14px">✓ ${v}</div>`;
+    }
+    html += `</div></div>`;
+  }
+
+  // Notes
+  if (data.notes && (data.notes.thanks || data.notes.sin || data.notes.tomorrow)) {
+    html += `<div style="background:#FFF8E7;padding:14px;border-radius:10px;margin-top:10px">
+      <div style="font-size:15px;font-weight:bold;color:#8B4513;margin-bottom:8px">التأمل</div>`;
+    if (data.notes.thanks) html += `<div style="margin-bottom:6px"><strong>الشكر:</strong> ${data.notes.thanks}</div>`;
+    if (data.notes.sin) html += `<div style="margin-bottom:6px"><strong>التوبة:</strong> ${data.notes.sin}</div>`;
+    if (data.notes.tomorrow) html += `<div style="margin-bottom:6px"><strong>الغد:</strong> ${data.notes.tomorrow}</div>`;
+    html += `</div>`;
+  }
+
+  document.getElementById('mainContent').innerHTML = html;
+}
+
+function renderStats() {
+  const hist = getAllHistory().slice(0, 30);
+  if (hist.length === 0) {
+    document.getElementById('mainContent').innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">📊</div>
+        <div class="empty-text">لا توجد بيانات بعد</div>
+      </div>`;
+    return;
+  }
+
+  // Calculate aggregates
+  let totalSins = 0, totalVirtues = 0, daysWithData = 0;
+  for (const k of hist) {
+    const d = loadDay(k.replace('muhasaba:',''));
+    if (!d) continue;
+    daysWithData++;
+    if (d.sins) totalSins += Object.values(d.sins).filter(v => v === 'yes').length;
+    if (d.virtues) {
+      totalVirtues += Object.entries(d.virtues).filter(([k,v]) => v === true || v > 0).length;
+    }
+  }
+
+  // Streak (consecutive days with any entry)
+  let streak = 0;
+  for (const k of hist) {
+    const d = loadDay(k.replace('muhasaba:',''));
+    if (!d) break;
+    const hasData = (d.virtues && Object.keys(d.virtues).length > 0) ||
+                    (d.sins && Object.keys(d.sins).length > 0);
+    if (hasData) streak++;
+    else break;
+  }
+
+  const dots = calculateHeartDots();
+  const currentDots = dots.length;
+
+  document.getElementById('mainContent').innerHTML = `
+    <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:14px">
+      <div style="background:white;padding:14px;border-radius:12px;text-align:center;border-top:3px solid #2F5233">
+        <div style="font-size:24px;font-weight:bold;color:#2F5233">${daysWithData}</div>
+        <div style="font-size:12px;color:#5C4A2A">أيام محاسبة</div>
+      </div>
+      <div style="background:white;padding:14px;border-radius:12px;text-align:center;border-top:3px solid #B8860B">
+        <div style="font-size:24px;font-weight:bold;color:#B8860B">${streak}</div>
+        <div style="font-size:12px;color:#5C4A2A">أيام متتالية</div>
+      </div>
+      <div style="background:white;padding:14px;border-radius:12px;text-align:center;border-top:3px solid #4A7C50">
+        <div style="font-size:24px;font-weight:bold;color:#4A7C50">${totalVirtues}</div>
+        <div style="font-size:12px;color:#5C4A2A">طاعات مسجّلة</div>
+      </div>
+      <div style="background:white;padding:14px;border-radius:12px;text-align:center;border-top:3px solid #8B0000">
+        <div style="font-size:24px;font-weight:bold;color:#8B0000">${currentDots}</div>
+        <div style="font-size:12px;color:#5C4A2A">نقاط في القلب</div>
+      </div>
+    </div>
+    <div style="background:#2F5233;color:white;padding:14px;border-radius:12px;text-align:center;font-size:14px;line-height:1.8">
+      قال النبي ﷺ:<br>
+      <strong>«أحبُّ الأعمال إلى الله أدْوَمُها وإن قَلَّ»</strong>
+    </div>
+  `;
+}
+
+function render() {
+  if (currentView === 'heart') renderHeart();
+  else if (currentView === 'garden') renderGarden();
+  else if (currentView === 'muhasaba') renderMuhasaba();
+  else if (currentView === 'tawba') renderTawba();
+  else if (currentView === 'history') renderHistory();
+  else if (currentView === 'stats') renderStats();
+}
+
+// =================== INIT ===================
+window.addEventListener('DOMContentLoaded', () => {
+  loadCurrent();
+  updateDateUI();
+  render();
+});
+</script>
+</body>
+</html>
